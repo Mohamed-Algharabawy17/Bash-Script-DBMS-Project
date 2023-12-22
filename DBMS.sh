@@ -32,7 +32,7 @@ echo "***************************"
             ;;
         4) echo "Insert Ionto Table"
             ;;
-       5) echo "Select From Table"
+       5) Select_Menu
             ;;
        6) echo "Delete From Table"
             ;;
@@ -221,6 +221,118 @@ else
     fi
 }
 
+#*************************Select Menu********************************************
+
+function Select_Menu
+{
+echo "********************************"
+echo "*      SELECT MENU             *"
+echo "********************************"
+echo "* 1. Select All Data           *"
+echo "* 2. Select Specific record    *"
+echo "* 3. Select Specific column    *"
+echo "********************************"
+
+ read -p "Enter your choice :" choice
+    case $choice in
+        1) Select_all_data
+            ;;
+        2)Select_specific_row
+            ;;
+       3) Select_specific_column 
+            ;;
+       *)echo "Invalid choice"
+            ;;
+    esac
+
+}
+
+
+function Select_all_data {
+    read -p "Enter Name of Table:" Table_name
+
+    if [ -f "$PWD/Main/$Table_name" ]
+    then
+        awk 'NR > 1 { print }' "$PWD/Main/$Table_name" |grep -n "|"
+	Select_Menu
+    else
+        echo "$Table_name Doesn't Exist"
+        Select_all_data
+    fi
+}
+
+ 
+
+
+function Select_specific_row {
+    read -p "Enter The Table Name:" Table_name
+
+    if [ -f "$PWD/Main/$Table_name" ] 
+    then
+        read -p "Enter Condition Column name:" Field_name
+        res1=$(awk 'BEGIN{FS="|"} NR==1{for(i=1;i<=NF;i++) if($i=="'$Field_name'") print i}' "$PWD/Main/$Table_name")
+
+        if [[  -z $res1 ]]
+	then
+            echo "Field name doesn't exist."
+            Table_Menu
+        else
+            read -p "Enter Value of Condition Column:" Value
+
+            res2=$(cut -d'|' -f$res1 "$PWD/Main/$Table_name" | grep -n "^$Value$")
+            if [[ -z $res2 ]]
+	    then
+                echo "The value of the condition column doesn't exist."
+                Table_Menu
+            else
+                Number_Record=$(cut -d'|' -f$res1 "$PWD/Main/$Table_name" | grep -n  "^$Value$" | cut -d':' -f1)
+                data=$(awk 'NR=='$Number_Record' {print}' "$PWD/Main/$Table_name")
+                
+                echo "Selected Row:"
+                echo "$data"
+                
+                Select_Menu
+            fi
+        fi
+    else
+        echo "Table doesn't exist."
+        Table_update
+    fi
+}
+
+function Select_specific_column {
+    read -p "Enter The Table Name:" Table_name
+
+    if [ -f "$PWD/Main/$Table_name" ]
+    then
+        read -p "Enter Condition Column name:" Field_name
+        res1=$(awk 'BEGIN{FS="|"} NR==1{for(i=1;i<=NF;i++) if($i=="'$Field_name'") print i}' "$PWD/Main/$Table_name")
+
+        if [[ -z $res1 ]] 
+	then
+            echo "Field name doesn't exist."
+            Table_Menu
+        else
+            read -p "Enter Value of Condition Column:" Value
+
+	    res2=$(cut -d'|' -f$res1 "$PWD/Main/$Table_name" | grep -n "^$Value$")
+
+	    
+            if [[ -z $res2 ]]
+	    then
+                echo "The value of the condition column doesn't exist."
+                Select_Menu
+            else
+                " cut -d'|' -f$res1 "$PWD/Main/$Table_name" | grep -n "^$Value$" "
+
+                Select_Menu
+             fi
+        fi
+    else
+        echo "Table doesn't exist."
+        Table_update
+    fi
+}
 
 
 
