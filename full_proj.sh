@@ -39,11 +39,12 @@ function Print_Menu {
 
 function CreateDB {
     read -p "Enter Database name: " db_name
-    mkdir -p $HOME/Main/$db_name 2> $HOME/.errors
-    if [[ $? == 0 ]]; then
-        echo "Database $db_name created successfully ;)"
+    if [[ -d "$HOME/Main/$db_name" ]]
+    then
+	    echo "The $db_name database already exists !"
     else
-        echo "The $db_name database already exists !"
+	    mkdir -p $HOME/Main/$db_name 2> $HOME/.errors
+	    echo "Database $db_name created successfully ;)"
     fi
 }
 
@@ -77,37 +78,31 @@ function DropDB {
 
     if [[ -d "$HOME/Main/$db_name" ]] 
     then
-	original_ps1=$PS1
-        PS1="Drop Database> "
-
         echo "Are you sure you want to drop the database $db_name? "
-	select confirm in "Yes" "No"
-	do
+        select confirm in "Yes" "No"
+        do
         case $confirm in
-            "Yes")
-                rm -r "Main/$db_name"
-                if [[ $? == 0 ]]; then
-                    echo "Database $db_name deleted successfully :)"
-                else
-                    echo "Failed to delete database $db_name."
-                fi
-                ;;
+            "Yes") rm -r "$HOME/Main/$db_name"
+                   if [[ ! -d "$HOME/Main/$db_name" ]] 
+		   then
+                       echo "Database $db_name deleted successfully :)"
+                   else
+                       echo "Failed to delete database $db_name."
+                   fi
+                   ;;
             "No")
-                echo "Database $db_name was not deleted."
-                ;;
+                   echo "Database $db_name was not deleted."
+                   ;;
             *)
-                echo "Invalid input. Database $db_name was not deleted."
-                ;;
+                   echo "Invalid input. Database $db_name was not deleted."
+                   ;;
         esac
-	break
-	done
-	PS1=$original_ps1
+        break
+        done
     else
         echo "Database $db_name doesn't exist!"
     fi
-
 }
-
 
 #------------------------- Table menu -------------------------------
 
@@ -488,13 +483,13 @@ echo "--------------------------------"
             ;;
         3) Select_specific_column 
             ;;
-        4) clear; cd ../
+        4) clear; Table_Menu
 	    ;;
         5) clear; Welcome; Print_Menu  
 	    ;;
         6) exit 1
 	    ;;
-        *)echo "Invalid choice"
+        *) echo "Invalid choice"; Select_Menu
             ;;
     esac
 
@@ -568,7 +563,7 @@ function Select_specific_column {
         else
             read -p "Enter Value of Condition Column:" Value
 
-	    res2=$(cut -d'|' -f$res1 "$PWD/$Table_name" | grep -n "^$Value$")
+	    res2=$(cut -d'|' -f"$res1" "$PWD/$Table_name" | grep -n "^$Value$")
 
 	    
             if [[ -z $res2 ]]
@@ -576,14 +571,14 @@ function Select_specific_column {
                 echo "The value of the condition column doesn't exist."
                 Select_Menu
             else
-                " cut -d'|' -f$res1 "$PWD/$Table_name" | grep -n "^$Value$" "
+		    cut -d'|' -f$res1 "$PWD/$Table_name" | grep -n "^$Value$"
 
                 Select_Menu
              fi
         fi
     else
         echo "Table doesn't exist."
-        Table_update
+	Select_Menu
     fi
 }
 
