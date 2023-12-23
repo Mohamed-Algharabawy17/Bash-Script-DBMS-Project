@@ -164,7 +164,7 @@ function Creat_Table
 
    if [ -f "$HOME/Main/$db_name/$Table_name" ]
    then
-         echo "$Table_name is already created ,please Enter the anther Name Table " ; Creat_Table
+         echo "$Table_name is already created ,please Enter the anther Name Table " ; Table_Menu
    fi
 
 
@@ -530,7 +530,7 @@ function Select_specific_row {
         if [[  -z $res1 ]]
 	then
             echo "Field name doesn't exist."
-            Table_Menu
+	    Select_Menu
         else
             read -p "Enter Value of Condition Column: " Value
 
@@ -538,7 +538,7 @@ function Select_specific_row {
             if [[ -z $res2 ]]
 	    then
                 echo "The value of the condition column doesn't exist !"
-                Table_Menu
+                Select_Menu
             else
                 Number_Record=$(cut -d'|' -f$res1 "$PWD/$Table_name" | grep -n  "^$Value$" | cut -d':' -f1)
 	         if ! [[ "$Number_Record" == "" ]]
@@ -577,7 +577,7 @@ function Select_specific_column {
         if [[ -z $res1 ]] 
 	then
             echo "Field name doesn't exist !"
-            Table_Menu
+            Select_Menu
         else
             read -p "Enter Value of Condition Column: " Value
 
