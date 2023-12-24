@@ -1,6 +1,6 @@
 #!/bin/bash
 
-mkdir -p Main 2> $HOME/.errors
+mkdir -p $HOME/Main 2> $HOME/.errors
 clear
 function Welcome {
 echo -e "\t\t\t\t\t\t\t\tWelcome to our project :)" 
