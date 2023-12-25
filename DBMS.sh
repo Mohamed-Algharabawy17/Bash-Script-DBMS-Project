@@ -9,7 +9,7 @@ echo -e "\t\t\t\t\t\tDevelpoed by Mohamed Algharabawy & Mohamed Torkey "
 echo -e "\n\n\n"
 }
 Welcome
-#-------------------- Print main menu for the user ---------------------
+#-------------------- Print main menu for the user ---------------------   * Created by Mohamed Gharabawy
 
 function Print_Menu {
     echo "*---------Main Menu---------*"
@@ -35,7 +35,7 @@ function Print_Menu {
 }
 
 
-#------------------------- Create Database -----------------------------
+#------------------------- Create Database -----------------------------   
 
 function CreateDB {
     read -p "Enter Database name: " db_name
@@ -363,11 +363,11 @@ function Insert {
 				echo "Your data type $Usr_Data is invalid it must be in ($Type) !"
 				read -p "Enter $Name ($Type)> " Usr_Data
 			done
-			while [[ -z $Usr_Data ]]    
-			do   
-                        	echo "Your integer data shouldn't be null !"    
-                        	read -p "Enter $Name ($Type)> " Usr_Data    
-			done
+			#while [[ -z $Usr_Data ]]    
+			#do   
+                        #	echo "Your integer data shouldn't be null !"    
+                        #	read -p "Enter $Name ($Type)> " Usr_Data    
+			#done
 		fi
 
 		if [[ "$Type" == "str" ]]    # Validate user input datatypes (string)
@@ -389,9 +389,15 @@ function Insert {
 				then
                         		echo "Invalid input for Primary Key!"
                         		read -p "Enter $Name ($Type)> " Usr_Data
-                    		else
-                        		break
                     		fi
+
+				if [[ -z $Usr_Data ]]    
+                        	then   
+                                	echo "PK data shouldn't be null !"    
+                                	read -p "Enter $Name ($Type)> " Usr_Data    
+				else
+					break
+				fi
                 	done
               fi
 
